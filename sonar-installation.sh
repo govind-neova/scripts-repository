@@ -104,4 +104,4 @@ echo "Kindly enter password for git account"
 read -sp 'Password: ' passvar
 echo $uservar
 
-git clone https://$uservar:$passvar@github.com/govind-neova/gitproject.git
+git clone https://$uservar:$passvar@$1
