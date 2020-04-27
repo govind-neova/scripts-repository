@@ -1,17 +1,36 @@
 #!/bin/bash
 
 #Install the java package
-echo "Checking openjdk-11-jre-headless package is installed or not"
+echo "Installing openjdk-11-jre-headless ,git ,unzip packages"
 
-dpkg -s openjdk-11-jre-headless &> /dev/null
-if [ $? -eq 0 ] 
-then
-    echo "Package openjdk-11-jre-headless is installed!"
-else
-    echo "Package openjdk-11-jre-headless is NOT installed!"
-    echo "Installing openjdk-11-jre-headless package"
-    apt install openjdk-11-jre-headless -y 
-fi
+apt-get update
+apt install openjdk-11-jre-headless -y
+apt install git -y
+apt install unzip -y
+
+#for i in openjdk-11-jre-headless unzip git
+#do
+#	dpkg -s $i &> /dev/null
+#	echo $?
+#	if [ $? -eq 0 ]
+#	then 
+#		echo "Package $i is installed!"
+#	else
+#		echo "Installing $i package"
+#		apt-get update
+#		apt install $i -y
+#	fi
+#done
+
+#dpkg -s openjdk-11-jre-headless &> /dev/null && dpkg -s unzip &> /dev/null && dpkg -s git &> /dev/null
+#if [ $? -eq 0 ] 
+#then
+#    echo "Packages openjdk-11-jre-headless ,git ,unzip packages are installed!"
+#else
+#    echo "Package openjdk-11-jre-headless is NOT installed!"
+#    echo "Installing openjdk-11-jre-headless package"
+#    apt install openjdk-11-jre-headless -y 
+#fi
 
 #Installing the sonarqube 8.2 version
 echo "checking if  sonarqube 8.2 version zip file exist or not"
@@ -52,3 +71,37 @@ fi
 #Running the sonarqube server as sonarqube user
 sudo -u  sonarqube bash -c ' sh /opt/sonarqube/bin/linux-x86-64/sonar.sh start '
 
+
+#Installing sonar-scanner
+
+echo "Installing sonar-scanner"
+
+echo "Checking if sonarscanner latest version exist or not"
+if [ -f sonar-scanner-cli-4.2.0.1873-linux.zip ]
+then 
+	echo "zip file already exist"
+else
+	echo "Installing and unzipping sonar-scanner"
+        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip
+   	unzip sonar-scanner-cli-4.2.0.1873-linux.zip
+fi
+
+#Running sonar-scanner
+
+echo "Installing sonar scanner in /opt sonar-scanner directory"
+
+if [ -d /opt/sonar-scanner ]
+then
+	echo "directory /opt/sonar-scanner already exist"
+else
+	mv sonar-scanner-4.2.0.1873-linux /opt/sonar-scanner
+fi
+
+#Set Environmental variables
+echo "Kindly enter username for git account"
+read -p 'Username: ' uservar
+echo "Kindly enter password for git account"
+read -sp 'Password: ' passvar
+echo $uservar
+
+git clone https://$uservar:$passvar@github.com/govind-neova/gitproject.git
