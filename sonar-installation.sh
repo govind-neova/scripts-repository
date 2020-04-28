@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#Setting PATH for sonar scanner
+echo "setting path variable for sonar-scanner"
+export SONAR_SCANNER_PATH=/opt/sonar-scanner/bin/sonar-scanner
+
 #Install the java package
 echo "Installing openjdk-11-jre-headless ,git ,unzip packages"
 
@@ -65,6 +69,7 @@ echo "Checking if sonarscanner latest version exist or not"
 if [ -f sonar-scanner-cli-4.2.0.1873-linux.zip ]
 then 
 	echo "zip file already exist"
+	unzip sonar-scanner-cli-4.2.0.1873-linux.zip
 else
 	echo "Installing and unzipping sonar-scanner"
         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip
@@ -77,7 +82,8 @@ echo "Installing sonar scanner in /opt sonar-scanner directory"
 
 if [ -d /opt/sonar-scanner ]
 then
-	echo "directory /opt/sonar-scanner already exist"
+	echo "directory /opt/sonar-scanner already exist kindly delete it"
+	exit 1;
 else
 	mv sonar-scanner-4.2.0.1873-linux /opt/sonar-scanner
 fi
