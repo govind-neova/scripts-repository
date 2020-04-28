@@ -3,34 +3,19 @@
 #Install the java package
 echo "Installing openjdk-11-jre-headless ,git ,unzip packages"
 
-apt-get update
-apt install openjdk-11-jre-headless -y
-apt install git -y
-apt install unzip -y
+SONAR_PKG="openjdk-11-jre-headless unzip git"
 
-#for i in openjdk-11-jre-headless unzip git
-#do
-#	dpkg -s $i &> /dev/null
-#	echo $?
-#	if [ $? -eq 0 ]
-#	then 
-#		echo "Package $i is installed!"
-#	else
-#		echo "Installing $i package"
-#		apt-get update
-#		apt install $i -y
-#	fi
-#done
-
-#dpkg -s openjdk-11-jre-headless &> /dev/null && dpkg -s unzip &> /dev/null && dpkg -s git &> /dev/null
-#if [ $? -eq 0 ] 
-#then
-#    echo "Packages openjdk-11-jre-headless ,git ,unzip packages are installed!"
-#else
-#    echo "Package openjdk-11-jre-headless is NOT installed!"
-#    echo "Installing openjdk-11-jre-headless package"
-#    apt install openjdk-11-jre-headless -y 
-#fi
+for pkg in $SONAR_PKG;
+do
+	if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null;
+	then 
+		echo "Package $pkg is installed!"
+	else
+		echo "Installing $pkg package"
+		apt-get update
+		apt install $pkg -y
+	fi
+done
 
 #Installing the sonarqube 8.2 version
 echo "checking if  sonarqube 8.2 version zip file exist or not"
@@ -97,11 +82,35 @@ else
 	mv sonar-scanner-4.2.0.1873-linux /opt/sonar-scanner
 fi
 
-#Set Environmental variables
-echo "Kindly enter username for git account"
-read -p 'Username: ' uservar
-echo "Kindly enter password for git account"
-read -sp 'Password: ' passvar
-echo $uservar
+#GITHUB setup
 
-git clone https://$uservar:$passvar@$1
+function userpasswrdlogin () {
+	
+	echo "Kindly enter username for git account"
+	read -p 'Username: ' uservar
+	echo "Kindly enter password for git account"
+	read -sp 'Password: ' passvar
+	echo $uservar
+	git clone https://$uservar:$passvar@github.com/govind-neova/gitproject.git
+
+     }
+
+function letmecreate () {
+
+	echo "Exiting the script" 
+
+     }
+
+clear 
+echo --------------------------------------------- 
+echo "Kindly Enter Your Choice" 
+echo --------------------------------------------- 
+echo 1.Want to aceess repository using username and password
+echo 2.Let me setup git at my own
+echo Enter your choice 
+read choice 
+case $choice in
+        1)userpasswrdlogin;;
+        2)letmecreate;;
+        *)echo This is not a choice
+esac
